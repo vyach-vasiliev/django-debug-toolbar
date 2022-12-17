@@ -49,6 +49,15 @@ class HistoryPanel(Panel):
     def nav_subtitle(self):
         return self.get_stats().get("request_url", "")
 
+    @property
+    def sql_panel(self):
+        from debug_toolbar.panels.sql import SQLPanel
+        return [
+            p
+            for p in self.toolbar.panels
+            if isinstance(p, SQLPanel)
+        ][0]
+
     def generate_stats(self, request, response):
         try:
             if request.method == "GET":
@@ -77,6 +86,7 @@ class HistoryPanel(Panel):
                 "status_code": response.status_code,
                 "data": data,
                 "time": timezone.now(),
+                "queries": self.sql_panel.nav_subtitle_tr,
             }
         )
 

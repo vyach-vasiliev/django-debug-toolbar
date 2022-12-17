@@ -140,6 +140,18 @@ class SQLPanel(Panel):
             "sql_time": self._sql_time,
         }
 
+
+    @property
+    def nav_subtitle_tr(self):
+        return ngettext(
+            "%(query_count)d query in %(sql_time).2fms",
+            "%(query_count)d queries in %(sql_time).2fms",
+            self._num_queries,
+        ) % {
+            "query_count": self._num_queries,
+            "sql_time": self._sql_time,
+        }
+
     @property
     def title(self):
         count = len(self._databases)
