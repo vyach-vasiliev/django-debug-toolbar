@@ -130,14 +130,38 @@ class SQLPanel(Panel):
     nav_title = _("SQL")
 
     @property
+    def sql_panels(self):
+        return [
+            v.stats['SQLPanel']
+            for k, v in self.toolbar._store.items()
+            if 'SQLPanel' in v.stats
+        ]
+
+    @property
+    def all_queries_count(self):
+        return sum([
+            len(p['queries'])
+            for p in self.sql_panels
+        ])
+
+    @property
+    def all_sql_time(self):
+        return sum([
+            p['sql_time']
+            for p in self.sql_panels
+        ])
+
+    @property
     def nav_subtitle(self):
         return ngettext(
-            "%(query_count)d query in %(sql_time).2fms",
-            "%(query_count)d queries in %(sql_time).2fms",
+            "%(query_count)d/%(all_queries_count)d query in %(sql_time).2fms/%(all_sql_time).2fms",
+            "%(query_count)d/%(all_queries_count)d queries in %(sql_time).2fms/%(all_sql_time).2fms",
             self._num_queries,
         ) % {
             "query_count": self._num_queries,
             "sql_time": self._sql_time,
+            "all_queries_count": self.all_queries_count,
+            "all_sql_time": self.all_sql_time,
         }
 
 
